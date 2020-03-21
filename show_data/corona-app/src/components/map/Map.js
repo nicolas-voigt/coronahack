@@ -59,6 +59,7 @@ class Map extends Component {
             lng: lng || 13.4050
           }}
           defaultZoom={zoom}
+          distanceToMouse={()=>{}}
         >
           {CoronaMarkers}
         </GoogleMapReact>
