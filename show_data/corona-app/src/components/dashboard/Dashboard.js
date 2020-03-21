@@ -8,11 +8,11 @@ import Zip from '../zip/Zip.js';
 export class Dashboard extends React.Component {
 
   constructor (props) {
-    super(props)
+    super(props);
     this.state = {
       toggleMap: false,
       toggleZip: false,
-    }
+    };
     this.toggleMap = this.toggleMap.bind(this);
     this.toggleZip = this.toggleZip.bind(this);
   }
@@ -26,7 +26,7 @@ export class Dashboard extends React.Component {
   }
 
   render() {
-    const { isGeolocationAvailable, coords } = this.props
+    const { isGeolocationAvailable, coords } = this.props;
     return (
       <nav>
         <div><Button variant="primary" onClick={this.toggleMap}>Karte anzeigen</Button></div>

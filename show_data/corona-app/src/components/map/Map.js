@@ -4,9 +4,11 @@ import APIKeys from '../../APIKeys.ignore';
 
 
 const CoronaMarker = ({ lat, lng,factor, link, text }) =>
-  <div>
+  <>
     <div>{text}</div>
-  </div>;
+  </>
+;
+
 
 const Markers = [
   {
@@ -39,6 +41,7 @@ const CoronaMarkers = Markers.map((marker, index) =>(
     factor={marker.factor}
     link={marker.link}
     text={marker.text}
+    key={index}
   />
 ));
 
@@ -49,7 +52,7 @@ class Map extends Component {
   };
 
   render() {
-    const { lat, lng, zoom } = this.props
+    const { lat, lng, zoom } = this.props;
     return (
       <div style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
