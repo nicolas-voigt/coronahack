@@ -1,4 +1,5 @@
 import React from 'react';
+import { geolocated } from "react-geolocated";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Map from '../map/Map.js';
@@ -25,18 +26,27 @@ export class Dashboard extends React.Component {
   }
 
   render() {
-
+    const { isGeolocationAvailable, coords } = this.props
     return (
       <nav>
         <div><Button variant="primary" onClick={this.toggleMap}>Karte anzeigen</Button></div>
         <Form>
           <Form.Control type="text" placeholder="PLZ tippen" /><Button variant="secondary" onClick={this.toggleZip}>Postleitzahl angeben</Button>
         </Form>
-        {this.state.toggleMap && <Map />}
+        {this.state.toggleMap &&
+            <Map
+            lat={(isGeolocationAvailable && coords) && coords.latitude}
+            lng={(isGeolocationAvailable && coords) && coords.longitude}
+        />}
         {this.state.toggleMap && <Zip />}
       </nav>
     );
   }
 }
 
-export default Dashboard;
+export default geolocated({
+    positionOptions: {
+        enableHighAccuracy: false,
+    },
+    userDecisionTimeout: 5000,
+})(Dashboard);
