@@ -5,25 +5,25 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
 class Map extends Component {
   static defaultProps = {
-    center: {
-      lat: 52.5200,
-      lng: 13.4050
-    },
-    zoom: 11
+    zoom: 9
   };
 
   render() {
+    const { lat, lng, zoom } = this.props
     return (
       // Important! Always set the container height explicitly
       <div style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
           bootstrapURLKeys={{ key: "" }}
-          defaultCenter={this.props.center}
-          defaultZoom={this.props.zoom}
+          defaultCenter={{
+            lat: lat || 52.5200,
+            lng: lng || 13.4050
+          }}
+          defaultZoom={zoom}
         >
           <AnyReactComponent
-            lat={52.5200}
-            lng={13.4050}
+            lat={lat || 52.5200}
+            lng={lng || 13.4050}
             text="My Marker"
           />
         </GoogleMapReact>

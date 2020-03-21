@@ -12,7 +12,7 @@
     "react-bootstrap": "^1.0.0-beta.17",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "google-map-react": "1.1.7"
+    "react-geolocated": "3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
