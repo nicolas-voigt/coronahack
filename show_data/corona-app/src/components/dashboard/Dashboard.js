@@ -1,47 +1,47 @@
 import React from 'react';
-import { geolocated } from "react-geolocated";
+import {geolocated} from "react-geolocated";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Map from '../map/Map.js';
-import Zip from '../zip/Zip.js';
+import Map from '../map/Map';
+import Zip from '../zip/Zip';
 
 export class Dashboard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showMap: true, /*false*/
+            toggleZip: false,
+        };
+        this.toggleMap = this.toggleMap.bind(this);
+        this.toggleZip = this.toggleZip.bind(this);
+    }
 
-  constructor (props) {
-    super(props);
-    this.state = {
-      toggleMap: false,
-      toggleZip: false,
-    };
-    this.toggleMap = this.toggleMap.bind(this);
-    this.toggleZip = this.toggleZip.bind(this);
-  }
+    toggleMap() {
+        this.setState({showMap: !this.state.showMap});
+    }
 
-  toggleMap(){
-    this.setState({ toggleMap: !this.state.toggleMap });
-  }
+    toggleZip() {
+        this.setState({toggleZip: !this.state.toggleZip});
+    }
 
-  toggleZip(){
-    this.setState({ toggleZip: !this.state.toggleZip });
-  }
-
-  render() {
-    const { isGeolocationAvailable, coords } = this.props;
-    return (
-      <nav>
-        <div><Button variant="primary" onClick={this.toggleMap}>Karte anzeigen</Button></div>
-        <Form>
-          <Form.Control type="text" placeholder="PLZ tippen" /><Button variant="secondary" onClick={this.toggleZip}>Postleitzahl angeben</Button>
-        </Form>
-        {this.state.toggleMap &&
-            <Map
-            lat={(isGeolocationAvailable && coords) && coords.latitude}
-            lng={(isGeolocationAvailable && coords) && coords.longitude}
-        />}
-        {this.state.toggleMap && <Zip />}
-      </nav>
-    );
-  }
+    render() {
+        const {isGeolocationAvailable, coords} = this.props;
+        return (
+            <nav>
+                <div><Button variant="primary" onClick={this.toggleMap}>Karte anzeigen</Button></div>
+                <Form>
+                    <Form.Control type="text" placeholder="PLZ tippen"/>
+                    <Button variant="secondary" onClick={this.toggleZip}>Postleitzahl angeben</Button>
+                </Form>
+                {this.state.showMap &&
+                <Map
+                    lat={(isGeolocationAvailable && coords) && coords.latitude}
+                    lng={(isGeolocationAvailable && coords) && coords.longitude}
+                />}
+                {this.state.showMap && <Zip/>}
+            </nav>
+        );
+    }
 }
 
 export default geolocated({

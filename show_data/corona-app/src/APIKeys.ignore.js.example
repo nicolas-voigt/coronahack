@@ -1,9 +1,0 @@
-class APIKeys {
-  static getGoogleMapsKey() {
-    return "";
-  }
-  static getIPInfoKey() {
-    return "";
-  }
-}
-export default APIKeys;
