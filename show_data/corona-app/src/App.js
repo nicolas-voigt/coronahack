@@ -5,9 +5,7 @@ import Dashboard from './components/dashboard/Dashboard.js';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
       <Dashboard />
-      </header>
     </div>
   );
 }
