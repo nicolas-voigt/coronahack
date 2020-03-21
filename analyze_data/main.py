@@ -10,12 +10,9 @@ import datetime
 #We are using bottle for the api
 from bottle import request, response
 from bottle import post, get, put, delete
+import config
 
-server ='ketograph.de'
-database = 'coronahack'
-username = 'coronahack'
-password =  'xapooyo6HeeS'
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + username + ':'+ password + '@' + server+ '/' + database
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + config.username + ':'+ config.password + '@' + config.server+ '/' + config.database
 
 # # Test if it works
 engine = sqlalchemy.create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
