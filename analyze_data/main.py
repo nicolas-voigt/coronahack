@@ -17,10 +17,9 @@ username = 'coronahack'
 password =  'xapooyo6HeeS'
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + username + ':'+ password + '@' + server+ '/' + database
 
-# Test if it works
+# # Test if it works
 engine = sqlalchemy.create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
-print(engine.table_names())
-
+# print(engine.table_names())
 
 def get_source_score(source_url):
     super_trust_sources = []
@@ -38,49 +37,43 @@ def get_source_score(source_url):
 
 def bewerte(data):
     source_score = get_source_score(data['url'])
+
+    # https://en.wikipedia.org/wiki/Rule_of_succession
+    user_rating = (data['user_rating'] + 1 ) / (data['total_ratings'] + 2)
     score = 1 # some smart formula
     return score
 
 def upload(data, table):
     data.to_sql('table', con=engine, if_exists='append', method='multi')
 
-dummy_data = pd.DataFrame({'url':'', 'timestamp':'', })
-
-unchecked_data = pd.read_sql(sql='SELECT * FROM dbname WHERE fact_checked == False'  , con=engine)
-
-for i in range(len(unchecked_data)):
-    unchecked_data.at[i, :] = bewerte(unchecked_data.at[i, :])
-
-upload(unchecked_data, 'checked_data')
-
-@post('/rate')
+@post('/rate') #https://stackoverflow.com/questions/34661318/replace-rows-in-mysql-database-table-with-pandas-dataframe
 def rate_data():
     try:
         # parse input data
         try:
             data = request.json()
+            data = {
+                'news_id': 1234,
+                'rating': 1
+            }
         except:
             raise ValueError
-
-        if data is None or data.id is None or data.rating is None:
-            raise ValueError
-        
         try:
-            data = pd.read_sql(sql='SELECT * FROM tablename WHERE fact_checked = true;'  , con=engine)
+            news_data = pd.read_sql(sql='SELECT * FROM news WHERE id = {0}'.format(data['news_id']), con=engine).at[0, :]
         except:
             raise ValueError
-        
-
     except ValueError:
-        # if bad request data, return 400 Bad Request
         response.status = 400
         return
 
-
-    data
-
-    response.headers['Content-Type'] = 'application/json'
-    return data.to_json(orient='records')
+    news_data['total_ratings'] += 1
+    news_data['user_rating'] += data['rating']
+    # replace row in database (delete and the reinsert)
+    delete_str = 'DELETE FROM db_name WHERE id == {0}'.format(data['news_id'])
+    cursor = engine.cursor()
+    cursor.execute(delete_str)
+    engine.commit()
+    news_data.to_sql('news', if_exists='append', con=engine)
 
 
 @post('/get_data')
@@ -89,24 +82,43 @@ def creation_handler():
         # parse input data
         try:
             data = request.json()
+            data = {
+                'country':'germany',
+                'state':'Bayern',
+                'city':'köln'
+            }
         except:
             raise ValueError
-
-        if data is None:
-            raise ValueError
-
-        try:
-            data = pd.read_sql(sql='SELECT * FROM dbname WHERE fact_checked == True'  , con=engine)
-        except:
-            raise ValueError
+        # try:
+        if data['country']:
+            country_data = pd.read_sql(sql='SELECT * FROM news WHERE state_id IS NULL AND city_id IS NULL', con=engine)
+        # except:
+        #     raise ValueError
         
+        # try:
+        if data['state']:
+            pd.read_sql(sql='SELECT * FROM state WHERE name="{0}"'.format(data['state']), con=engine).at[0,'id']
+            state_data = pd.read_sql(sql='SELECT * FROM news WHERE state_id="{0}"'.format(state_id)  , con=engine)
+        # except:
+        #     raise ValueError
 
+        # try:
+        if data['city']:
+            city_id = pd.read_sql(sql='SELECT * FROM city WHERE name="{0}"'.format(data['city']), con=engine).at[0, 'id']
+            city_data = pd.read_sql(sql='SELECT * FROM news WHERE state_id="{0}"'.format(city_id), con=engine)
+        # except:
+        #     raise ValueError
+        
     except ValueError:
         # if bad request data, return 400 Bad Request
         response.status = 400
         return
+    
+    # TODO: Add trust score
 
     response.headers['Content-Type'] = 'application/json'
-    return data.to_json(orient='records')
+    return json.dumps({"country":country_data.to_json(), "state":state_data.to_json(), "city":city_data.to_json()})
+
+
 if __name__ == '__main__':
     bottle.run(s, host = '127.0.0.1', port = 8000)
