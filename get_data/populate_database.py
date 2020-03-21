@@ -31,6 +31,13 @@ def insert_cities(cities, connection):
         c.execute(query)
         connection.commit()
 
+    # Mannheim and Wüllheim have as state Würtemberg-Baden, set it to Baden-Würtemberg
+    # SELECT id FROM state WHERE name = "Würtemberg-Baden";
+    # update city set state = 2 where state = 11;
+
+    # Hamburg is missing, replace it with the Württemberg-Baden entry
+    # update state Set name = "Hamburg" where name = "Württemberg-Baden";
+
 def main():
     cities = load_city_list("city_list.json")
     connection = connect()
