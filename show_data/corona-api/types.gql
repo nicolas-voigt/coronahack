@@ -1,0 +1,24 @@
+type Query {
+    city(name: String!): City
+}
+
+type City {
+    id: Int!
+    name: String!
+    coordinates: String!
+    state: State!
+    news: [News!]!
+}
+
+type State {
+    id: Int!
+    name: String!
+}
+
+type News {
+    id: Int!
+    state: State!
+    city: City!
+    title: String!
+    url: String!
+}
