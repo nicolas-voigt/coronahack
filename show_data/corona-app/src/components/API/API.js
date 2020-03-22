@@ -5,7 +5,7 @@ import CoronaMarkers from '../map/CoronaMarkers';
 class Markers extends Component {
     render() {
       return (
-        <Post url="http://localhost:8000/get_data" params={{city: "Herne"}}>
+        <Post url="https://infocovid19:8000/get_data" params={{city: "Herne"}}>
           {(error, response, isLoading, makeRequest, axios) => {
             if(!error && !isLoading && response !== null) {
               return response.city.map((marker, index) => {
