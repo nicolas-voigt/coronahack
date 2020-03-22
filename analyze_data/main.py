@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+
 import pandas as pd 
 import numpy as np 
 
@@ -31,12 +34,13 @@ def get_source_score(source_url):
     else:
         return 0
 
-def bewerte(data):
-    source_score = get_source_score(data['url'])
-
+def calc_trust_score(data):
     # https://en.wikipedia.org/wiki/Rule_of_succession
     user_rating = (data['user_rating'] + 1 ) / (data['total_ratings'] + 2)
-    score = 1 # some smart formula
+
+    time_delta = datetime.timedelta(datetime.datetime.today() - data['date']).days
+    source_score = get_source_score(data['url'])
+    score = source_score * (1 / (1 * np.e**(0.5*time_delta))) # source_score * sigmoid(t)
     return score
 
 def upload(data, table):
