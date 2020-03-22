@@ -8,7 +8,6 @@ export const InjectGlobal = createGlobalStyle `
     font-family: 'Lato', sans-serif;
     width: 100vW;
     height: 100vh;
-    overflow: hidden;
   }
   
   p {

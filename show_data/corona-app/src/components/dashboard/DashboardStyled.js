@@ -9,9 +9,14 @@ export const HeaderStyled = styled.div`
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 15px 20px;
   max-height: ${headerHeight};
-  overflow: hidden;
+    padding: 10px;
+  
+  @media (min-width: 768px){
+    padding: 15px 20px;
+    height: 70px;
+  }
+  
 `;
 
 export const ContentContainerStyled = styled.div`
@@ -23,12 +28,12 @@ export const LogoImgStyled = styled.img`
   max-height: 40px;
 `;
 
-export const MapToggleButtonStyled = styled.button`
-    height: 40px;
+const inputHeight = 40;
+const buttonDefaults = css`
+height: ${inputHeight}px;
     display: inline-block;
     border-radius: 8px;
-      background-color: ${props => !props.mapIsOn? green_bg : popUpBubbleCloseButtonBgColor};
-    
+    background-color: ${props => !props.mapIsOn? green_bg : popUpBubbleCloseButtonBgColor};
     border: none;
     color: ${popUpBubbleTxtColor};
     text-align: left;
@@ -37,6 +42,16 @@ export const MapToggleButtonStyled = styled.button`
     transition: all 0.5s;
     cursor: pointer;
     outline: none;
+    box-shadow: none;
+    
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+`;
+
+export const MapToggleButtonStyled = styled.button`
+    ${buttonDefaults}
     
     span {
         cursor: pointer;
@@ -69,3 +84,29 @@ export const MapToggleButtonStyled = styled.button`
         }
     }
 `;
+
+
+export const LabelStyled = styled.label`
+  display: none;
+`;
+
+export const InputStyled = styled.input`
+  border: 1px solid ${green_bg};
+  border-radius: 8px 0 0 8px;
+  height: ${inputHeight - 2}px;
+  padding: 0 10px;
+    
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+`;
+
+export const CitySearchButtonStyled = styled.button`
+  ${buttonDefaults};
+  
+  padding: 8px 12px;
+  border-radius: 0 8px 8px 0;
+`;
+
+

@@ -6,7 +6,10 @@ import {
     LogoImgStyled,
     HeaderStyled,
     MapToggleButtonStyled,
-    ContentContainerStyled
+    ContentContainerStyled,
+    LabelStyled,
+    InputStyled,
+    CitySearchButtonStyled
 } from "./DashboardStyled"
 import {FaMapMarkedAlt} from "react-icons/fa";
 import MainContent from "../MainContent"
@@ -33,6 +36,7 @@ export class Dashboard extends React.Component {
 
     render() {
         const {isGeolocationAvailable, coords} = this.props;
+
         return (
             <>
                 <HeaderStyled>
@@ -40,8 +44,9 @@ export class Dashboard extends React.Component {
 
                     {this.state.showMap &&
                     <Form>
-                        <Form.Control type="text" placeholder="PLZ tippen"/>
-                        <Button type="submit" variant="primary" onClick={this.toggleZip}>Postleitzahl angeben</Button>
+                        <LabelStyled for="search-city">Stadt finden</LabelStyled>
+                        <InputStyled type="text" placeholder="Postleitzahl angeben" name="search-city" />
+                        <CitySearchButtonStyled type="submit" variant="primary" onClick={this.toggleZip}>Suchen!</CitySearchButtonStyled>
                     </Form>}
                     <MapToggleButtonStyled type={'button'} mapIsOn={this.state.showMap} onClick={this.toggleMap}>
                         {!this.state.showMap?
