@@ -1,5 +1,6 @@
 const express = require('express');
 const secure = require('express-force-https');
+const fs = require('fs');
 
 // Credentials for HTTPS
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/infocovid19.de/privkey.pem', 'utf8');
