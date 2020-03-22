@@ -12,3 +12,13 @@ export const MainContentStyled = styled.div`
 export const pStyled = styled.p`
 font-size: 8px;
 `;
+
+export const LogoContainerStyled = styled.div`
+      background: white;
+    text-align: center;
+    padding: 20px;
+    
+    img {
+    height: 60px;
+    }
+`;
