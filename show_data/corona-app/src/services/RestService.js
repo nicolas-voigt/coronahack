@@ -33,8 +33,8 @@ class RestService {
   async retrieveArticlesFromLocation(lat, lng) {
     let url = geocodeURL & lat & "," & lng & "key=" & APIKeys.getGoogleMapsKey();
     let retArr = [];
-    let state = '';
-    let city = '';
+    let state = undefined;
+    let city = undefined;
 
     let response = await fetch(url);
     if (response.ok) {
@@ -48,8 +48,12 @@ class RestService {
           state = state.long_name;
         }
       }
-      retArr.concat(await this.retrieveArticlesForCity(city));
-      retArr.concat(await this.retrieveArticlesForState(state));
+      if (city !== undefined) {
+        retArr.concat(await this.retrieveArticlesForCity(city));
+      }
+      if (state !== undefined) {
+        retArr.concat(await this.retrieveArticlesForState(state));
+      }
       return retArr;
 
     } else {
