@@ -12,7 +12,7 @@ import mysql.connector as mariadb
 import locale
 
 
-pageNum = 1
+pageNum = 0
 url = 'https://www.landkreisleipzig.de/pressemeldungen.html?seite=' + str(pageNum) + '#form-press-search'
 base_url="https://www.landeskreisleipzig.de"
 
@@ -32,7 +32,7 @@ def PushNewDataToDB(tuple):
         srcName = tuple[3]
         srcType = tuple[4]
         
-        debug = False
+        debug = True
 
         cursor.execute("SELECT * FROM news WHERE date = %s AND url = %s AND title = %s", (date, url, title))   
         if(debug):
@@ -143,7 +143,7 @@ while bDatafeedsLeft:
                 
             # url
             for i in a.findAll("a", {"class":"btn btn-readmore"}):
-                tmpUrl = base_url + i.attrs['href']
+                tmpUrl = base_url + "/" + i.attrs['href']
                 # print(tmpUrl)
                 listUrl.append(tmpUrl)
              
@@ -173,6 +173,9 @@ print("crawling finished")
 tuplelist = []
 for i in range(0,listDate.__len__()):
     tuplelist.append((listDate[i], listUrl[i], listTitle[i], srcName,srcType))
+
+
+
 
 print()
 print("Connecting to db..")
