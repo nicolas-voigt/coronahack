@@ -9,9 +9,15 @@ import json
 import sqlalchemy
 import datetime
 
-#We are using bottle for the api
-from bottle import request, response, run
-from bottle import post, get, put, delete
+#f u bottle I'm now using a Flask
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+
+app = Flask(__name__)
+
+#allow cors
+CORS(app)
+
 import config
 
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + config.username + ':'+ config.password + '@' + config.server+ '/' + config.database
@@ -19,6 +25,7 @@ SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + config.username + ':'+ config.pas
 # # Test if it works
 engine = sqlalchemy.create_engine(SQLALCHEMY_DATABASE_URI)
 # print(engine.table_names())
+
 
 def get_source_score(source_url):
     super_trust_sources = []
@@ -46,7 +53,7 @@ def calc_trust_score(data):
 def upload(data, table):
     data.to_sql('table', con=engine, if_exists='append', method='multi')
 
-@post('/rate') #https://stackoverflow.com/questions/34661318/replace-rows-in-mysql-database-table-with-pandas-dataframe
+@app.route('/rate', methods=['POST']) #https://stackoverflow.com/questions/34661318/replace-rows-in-mysql-database-table-with-pandas-dataframe
 def rate_data():
     try:
         # parse input data
@@ -63,7 +70,7 @@ def rate_data():
         except:
             raise ValueError
     except ValueError:
-        response.status = 400
+        #response.status = 400
         return
 
     news_data['total_ratings'] += 1
@@ -74,21 +81,15 @@ def rate_data():
     cursor.execute(delete_str)
     engine.commit()
     news_data.to_sql('news', if_exists='append', con=engine)
+    #add_cors_headers()
 
-
-@post('/get_data')
+@app.route('/get_data', methods=['POST'])
 def creation_handler():
     request_data = {}
-    data = {'country':'', 'state':'', 'city':''}
+    data = {'country':pd.DataFrame(), 'state':pd.DataFrame(), 'city':pd.DataFrame()}
     try:
-        # parse input data
         try:
             request_data = request.json
-            # data = {
-            #     'country':'germany',
-            #     'state':'Bayern',
-            #     'city':'Herne'
-            # }
         except:
             raise ValueError
         try:
@@ -97,7 +98,7 @@ def creation_handler():
             else:
                 data['country'] = pd.DataFrame()
         except KeyError:
-            raise ValueError
+            raise KeyError
         
         try:
             if request_data['state']:
@@ -107,8 +108,8 @@ def creation_handler():
                 
             else:
                 data['state'] = pd.DataFrame()
-        except:
-            raise ValueError
+        except KeyError:
+            raise KeyError
 
         try:
             if request_data['city']:
@@ -117,19 +118,23 @@ def creation_handler():
                 data['city']['name'] = request_data['city']
             else:
                 data['city'] = pd.DataFrame()
-        except:
-            raise ValueError
+        except KeyError:
+            raise KeyError
         
     except ValueError:
         # if bad request data, return 400 Bad Request
-        response.status = 400
+        #response.status = 400
+        return
+    except KeyError:
+        # if bad request data, return 400 Bad Request
+        #response.status = 400
         return
     
     # TODO: Add trust score
     for key in data:
         if not data[key].empty:
             data[key]['trust_rank'] = 0.5
-            data[key]['flesch_reading_ease'] = 0.6
+            data[key]['flesch_reading_ease'] = 0.6 # https://pypi.org/project/textstat/
             source_id = data[key].at[0,'source_id']
             sql_quer = 'SELECT * FROM source WHERE id="{0}"'.format(source_id)
             data[key]['source_name'] = pd.read_sql(sql=sql_quer.format(source_id), con=engine).at[0, 'name']
@@ -139,10 +144,13 @@ def creation_handler():
         else:
             data[key] = ''
 
-    response.headers['Content-Type'] = 'application/json'
+    #response.headers['Content-Type'] = 'application/json'
+    #add_cors_headers()
     return json.dumps({"country":data['country'], "state":data['state'], "city":data['city']}, ensure_ascii=False)
 
+# context.use_certificate_file('yourserver.crt')
 
 if __name__ == '__main__':
-    run(host = '127.0.0.1', port = 8000)
+    context = ('/etc/letsencrypt/live/infocovid19.de/cert.pem', '/etc/letsencrypt/live/infocovid19.de/privkey.pem')#certificate and key files
+    app.run(host= '127.0.0.1', port=8000, ssl_context=context)
 
