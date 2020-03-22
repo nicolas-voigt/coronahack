@@ -9,7 +9,6 @@ import {
     ContentContainerStyled
 } from "./DashboardStyled"
 import {FaMapMarkedAlt} from "react-icons/fa";
-import {InjectGlobal} from "../../theme/globalStyles"
 import MainContent from "../MainContent"
 
 
@@ -36,7 +35,6 @@ export class Dashboard extends React.Component {
         const {isGeolocationAvailable, coords} = this.props;
         return (
             <>
-                <InjectGlobal/>
                 <HeaderStyled>
                     <LogoImgStyled src="img/logo_infocovid19.png" alt="Logo Info-Covid-19"/>
 
