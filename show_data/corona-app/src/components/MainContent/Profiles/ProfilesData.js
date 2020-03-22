@@ -10,7 +10,7 @@ export const ProfilesData = [
         name: "Thomas",
         role: "Backend-Entwicklung",
         linkedin: "https://github.com/ketograph",
-        pic: "julian.jpg",
+        pic: "default.png",
     },
     {
         name: "Gianluca De Stefano",
@@ -47,7 +47,7 @@ export const ProfilesData = [
     },
     {
         name: "Nicolas",
-        role: "Frontend-Entwicklung + Frontend Server Management",
+        role: "Frontend-Entwicklung",
         linkedin: "https://www.linkedin.com/in/nicolasvoigt/",
         xing: "https://www.xing.com/profile/Nicolas_Voigt3",
         twitter: "https://twitter.com/nvfontoy",
@@ -59,6 +59,13 @@ export const ProfilesData = [
         linkedin: "https://www.linkedin.com/in/ghaviari/",
         pic: "geldi.jpg",
     },
+    {
+        name: "Thanh Trung",
+        role: "Backend Entwickler",
+        linkedin: "https://de.linkedin.com/in/thanh-trung-tran-b975b6162",
+        xing: "https://www.xing.com/profile/ThanhTrung_Tran",
+        pic: "trung_small.jpg"
+    }
 ];
 
 /*
