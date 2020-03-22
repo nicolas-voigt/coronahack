@@ -42,7 +42,7 @@ export const ProfilesData = [
     {
         name: "Stefanie",
         role: "Backend-Entwicklung",
-        xing: "https://xing.com/profile/Joachim_Schwarm",
+        xing: "https://www.xing.com/profile/Stefanie_Dlask",
         pic: "stefanie.png",
     },
     {
