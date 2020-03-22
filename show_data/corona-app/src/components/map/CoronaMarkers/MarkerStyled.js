@@ -3,6 +3,7 @@ import {popUpBubbleBgColor, popUpBubbleCloseButtonBgColor, popUpBubbleTxtColor} 
 import {FaMapMarkerAlt} from "react-icons/fa";
 import {MdClose} from "react-icons/md";
 
+
 export const CoronaMarkerContainer = styled.div`
   position: absolute;
 `;
@@ -33,7 +34,7 @@ export const CloseButtonStyled = styled(MdClose)`
 
 export const CoronaMarkerStyled = styled.div`
     opacity: ${props => props.popUpIsOn? `1` : `0`};
-    background-color: ${popUpBubbleBgColor}e6; /*TDOD Geldi: replace with rgba*/
+    background-color: ${popUpBubbleBgColor}e6; /*TODO Geldi: replace with rgba*/
     color: ${popUpBubbleTxtColor};
     display: block;
     border: 1px solid ${popUpBubbleTxtColor};

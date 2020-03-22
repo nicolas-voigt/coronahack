@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import GoogleMapReact from 'google-map-react';
 import APIKeys from '../../APIKeys.ignore';
 import CoronaMarkers from './CoronaMarkers'
+import {MapContainerStyled} from './MapStyled'
 
 class Map extends Component {
     static defaultProps = {
@@ -11,7 +12,7 @@ class Map extends Component {
     render() {
         const {lat, lng, zoom} = this.props;
         return (
-            <div style={{height: '100vh', width: '100%'}}>
+            <MapContainerStyled>
                 <GoogleMapReact
                     bootstrapURLKeys={{key: APIKeys.getGoogleMapsKey()}}
                     defaultCenter={{
@@ -24,7 +25,7 @@ class Map extends Component {
                 >
                     {CoronaMarkers}
                 </GoogleMapReact>
-            </div>
+            </MapContainerStyled>
         );
     }
 }
