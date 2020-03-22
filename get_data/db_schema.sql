@@ -1,7 +1,7 @@
 CREATE TABLE `city` (
 	`id` INT(255) NOT NULL AUTO_INCREMENT,
 	`name` TEXT NOT NULL,
-	`state` INT NOT NULL,
+	`state_id` INT NOT NULL,
 	`coordinates` POINT NOT NULL,
 	PRIMARY KEY (`id`)
 );

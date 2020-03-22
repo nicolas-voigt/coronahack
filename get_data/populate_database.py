@@ -27,22 +27,27 @@ def insert_cities(cities, connection):
         c.execute("SELECT id FROM state WHERE name = %s", (bundesland, ))
         state_id = c.fetchone()[0]
 
-        query = f"INSERT INTO city (name, state, coordinates) VALUES ('{city['itemLabel']}', {state_id}, ST_PointFromText('{city['coordinates']}'))"
+        query = f"INSERT INTO city (name, state_id, coordinates) VALUES ('{city['itemLabel']}', {state_id}, ST_PointFromText('{city['coordinates']}'))"
         c.execute(query)
         connection.commit()
 
     # Mannheim and Wüllheim have as state Würtemberg-Baden, set it to Baden-Würtemberg
-    # SELECT id FROM state WHERE name = "Würtemberg-Baden";
-    # update city set state = 2 where state = 11;
+    # SELECT id FROM state WHERE name = "Württemberg-Baden";
+    # update city set state_id = 2 where state_id = 11;
 
     # Hamburg is missing, replace it with the Württemberg-Baden entry
     # update state Set name = "Hamburg" where name = "Württemberg-Baden";
+    # INSERT INTO city (name, state_id, coordinates) VALUES ('Hamburg', 11, ST_PointFromText('Point(53.55 10)'));
+
+    # city of Berlin is missing
+    # select * from state where name = "Berlin";
+    # INSERT INTO city (name, state_id, coordinates) VALUES ('Berlin', 13, ST_PointFromText('Point(52.516 13.383)'));
 
 def main():
     cities = load_city_list("city_list.json")
     connection = connect()
     # insert_states(cities, connection)
-    # insert_cities(cities, connection)
+    insert_cities(cities, connection)
     connection.close()
 
 if __name__ == '__main__':
