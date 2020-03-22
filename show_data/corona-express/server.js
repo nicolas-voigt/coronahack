@@ -19,4 +19,4 @@ let app = express();
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 app.use(secure);
-app.use(express.static('../corona-app/build/'));
+app.use('/', express.static('../corona-app/build/'));
