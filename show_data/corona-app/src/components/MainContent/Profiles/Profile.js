@@ -7,10 +7,10 @@ import {
     ContentContainerStyled,
     LinkContainer
 } from './ProfileStyled';
-import {FaLinkedin, FaTwitterSquare, FaGithubSquare, FaLink} from 'react-icons/fa';
+import {FaLinkedin, FaTwitterSquare, FaGithubSquare, FaLink, FaXingSquare} from 'react-icons/fa';
 
 const Profile = (props) => {
-    const {name, role, github, linkedin, twitter, website, pic} = props;
+    const {name, role, github, linkedin, twitter, website, pic, xing} = props;
     return <>
         <ProfileStyled>
             <PicContainerStyled>
@@ -24,6 +24,7 @@ const Profile = (props) => {
                     {linkedin && <LinkStyled href={linkedin} target="_blank" title="linkedin"><FaLinkedin/></LinkStyled>}
                     {twitter && <LinkStyled href={twitter} target="_blank" title="twitter"><FaTwitterSquare/></LinkStyled>}
                     {website && <LinkStyled href={website} target="_blank" title="website"><FaLink/></LinkStyled>}
+                    {xing && <LinkStyled href={xing} target="_blank" title="website"><FaXingSquare/></LinkStyled>}
                 </LinkContainer>
             </ContentContainerStyled>
         </ProfileStyled>

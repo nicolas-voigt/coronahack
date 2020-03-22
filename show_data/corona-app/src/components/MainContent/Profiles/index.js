@@ -14,6 +14,7 @@ const Profiles = () => {
                 linkedin={item.linkedin}
                 twitter={item.twitter}
                 website={item.website}
+                xing={item.xing}
                 pic={item.pic}
             />
         ))}
