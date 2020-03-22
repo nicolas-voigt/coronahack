@@ -20,6 +20,13 @@ SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + config.username + ':'+ config.pas
 engine = sqlalchemy.create_engine(SQLALCHEMY_DATABASE_URI)
 # print(engine.table_names())
 
+def add_cors_headers():
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = \
+        'GET, POST, PUT, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = \
+        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
 def get_source_score(source_url):
     super_trust_sources = []
     trust_sources = []
@@ -74,21 +81,16 @@ def rate_data():
     cursor.execute(delete_str)
     engine.commit()
     news_data.to_sql('news', if_exists='append', con=engine)
+    add_cors_headers()
 
 
 @post('/get_data')
 def creation_handler():
     request_data = {}
-    data = {'country':'', 'state':'', 'city':''}
+    data = {'country':pd.DataFrame(), 'state':pd.DataFrame(), 'city':pd.DataFrame()}
     try:
-        # parse input data
         try:
             request_data = request.json
-            # data = {
-            #     'country':'germany',
-            #     'state':'Bayern',
-            #     'city':'Herne'
-            # }
         except:
             raise ValueError
         try:
@@ -97,7 +99,7 @@ def creation_handler():
             else:
                 data['country'] = pd.DataFrame()
         except KeyError:
-            raise ValueError
+            raise KeyError
         
         try:
             if request_data['state']:
@@ -107,8 +109,8 @@ def creation_handler():
                 
             else:
                 data['state'] = pd.DataFrame()
-        except:
-            raise ValueError
+        except KeyError:
+            raise KeyError
 
         try:
             if request_data['city']:
@@ -117,10 +119,14 @@ def creation_handler():
                 data['city']['name'] = request_data['city']
             else:
                 data['city'] = pd.DataFrame()
-        except:
-            raise ValueError
+        except KeyError:
+            raise KeyError
         
     except ValueError:
+        # if bad request data, return 400 Bad Request
+        response.status = 400
+        return
+    except KeyError:
         # if bad request data, return 400 Bad Request
         response.status = 400
         return
@@ -129,7 +135,7 @@ def creation_handler():
     for key in data:
         if not data[key].empty:
             data[key]['trust_rank'] = 0.5
-            data[key]['flesch_reading_ease'] = 0.6
+            data[key]['flesch_reading_ease'] = 0.6 # https://pypi.org/project/textstat/
             source_id = data[key].at[0,'source_id']
             sql_quer = 'SELECT * FROM source WHERE id="{0}"'.format(source_id)
             data[key]['source_name'] = pd.read_sql(sql=sql_quer.format(source_id), con=engine).at[0, 'name']
@@ -140,6 +146,7 @@ def creation_handler():
             data[key] = ''
 
     response.headers['Content-Type'] = 'application/json'
+    add_cors_headers()
     return json.dumps({"country":data['country'], "state":data['state'], "city":data['city']}, ensure_ascii=False)
 
 
