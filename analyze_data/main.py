@@ -12,6 +12,7 @@ import datetime
 #We are using bottle for the api
 from bottle import request, response, run
 from bottle import post, get, put, delete
+import bottle
 import config
 
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + config.username + ':'+ config.password + '@' + config.server+ '/' + config.database
@@ -26,6 +27,26 @@ def add_cors_headers():
         'GET, POST, PUT, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = \
         'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
+@bottle.route('/<:re:.*>', method='OPTIONS')
+def enable_cors_generic_route():
+    """
+    This route takes priority over all others. So any request with an OPTIONS
+    method will be handled by this function.
+
+    See: https://github.com/bottlepy/bottle/issues/402
+
+    NOTE: This means we won't 404 any invalid path that is an OPTIONS request.
+    """
+    add_cors_headers()
+
+@bottle.hook('after_request')
+def enable_cors_after_request_hook():
+    """
+    This executes after every route. We use it to attach CORS headers when
+    applicable.
+    """
+    add_cors_headers()
 
 def get_source_score(source_url):
     super_trust_sources = []
@@ -81,7 +102,6 @@ def rate_data():
     cursor.execute(delete_str)
     engine.commit()
     news_data.to_sql('news', if_exists='append', con=engine)
-    add_cors_headers()
 
 
 @post('/get_data')
@@ -146,7 +166,6 @@ def creation_handler():
             data[key] = ''
 
     response.headers['Content-Type'] = 'application/json'
-    add_cors_headers()
     return json.dumps({"country":data['country'], "state":data['state'], "city":data['city']}, ensure_ascii=False)
 
 
