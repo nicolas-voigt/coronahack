@@ -48,8 +48,8 @@ class RestService {
           state = state.long_name;
         }
       }
-      retArr.concat(this.retrieveArticlesForCity(city));
-      retArr.concat(this.retrieveArticlesForState(state));
+      retArr.concat(await this.retrieveArticlesForCity(city));
+      retArr.concat(await this.retrieveArticlesForState(state));
       return retArr;
 
     } else {
