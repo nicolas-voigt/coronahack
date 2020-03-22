@@ -1,6 +1,6 @@
-import React from 'react';
-import {CoronaMarker} from './CoronaMarker';
-import {Markers} from './MarkersData';
+import React from "react";
+import {CoronaMarker} from "./CoronaMarker";
+import {Markers} from "./MarkersData";
 
 const CoronaMarkers = Markers.map((marker, index) => (
     <CoronaMarker

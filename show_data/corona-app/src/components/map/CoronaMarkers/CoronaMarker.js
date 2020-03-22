@@ -1,19 +1,28 @@
-import React from 'react';
-import styled from 'styled-components'
+import React, {useState} from "react";
+import {
+    CoronaMarkerContainer,
+    FaMapMarkerAltStyled,
+    CloseButtonStyled,
+    CoronaMarkerStyled,
+    MarkerTitleStyled,
+    MarkerAnchorContainerStyled,
+    MarkerAnchorStyled
+} from "./MarkerStyled"
 
-const CoronaMarkerStyled = styled.div`
-  background: #ffffff;
-  display: block;
-`;
+export const CoronaMarker = ({factor, link, text}) => {
+    const [popUpIsOn, setPopUpIsOn] = useState(false);
 
-export const CoronaMarker = ({lat, lng, factor, link, text}) => {
     return (
-        <CoronaMarkerStyled className={'hallo marker'}>
-            {text}
-            {lat}<br/>
-            {lng}<br/>
-            {factor}<br/>
-            {link}<br/>
-        </CoronaMarkerStyled>
+        <CoronaMarkerContainer>
+            <FaMapMarkerAltStyled onClick={() => {setPopUpIsOn(!popUpIsOn)}}/>
+            <CoronaMarkerStyled popUpIsOn={popUpIsOn} factor={factor} className={"hallo marker"}>
+                <CloseButtonStyled onClick={() => {setPopUpIsOn(false)}} />
+                <MarkerTitleStyled>{text}</MarkerTitleStyled>
+                <MarkerAnchorContainerStyled>
+                    <MarkerAnchorStyled href={link} title={text}
+                                        target="_blank">{link}</MarkerAnchorStyled>
+                </MarkerAnchorContainerStyled>
+            </CoronaMarkerStyled>
+        </CoronaMarkerContainer>
     )
 };

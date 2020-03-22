@@ -1,45 +1,68 @@
 import React from 'react';
 import {geolocated} from "react-geolocated";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import Map from '../map/Map';
-import Zip from '../zip/Zip';
+import {Form, Button} from "react-bootstrap";
+import {
+    LogoImgStyled,
+    HeaderStyled,
+    MapToggleButtonStyled,
+    ContentContainerStyled
+} from "./DashboardStyled"
+import {FaMapMarkedAlt} from "react-icons/fa";
+import {InjectGlobal} from "../../theme/globalStyles"
+import MainContent from "../MainContent"
+
 
 export class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showMap: true, /*false*/
-            toggleZip: false,
+            showMap: false,
+            showZip: false,
         };
         this.toggleMap = this.toggleMap.bind(this);
         this.toggleZip = this.toggleZip.bind(this);
-    }
+    };
 
     toggleMap() {
         this.setState({showMap: !this.state.showMap});
-    }
+    };
 
     toggleZip() {
-        this.setState({toggleZip: !this.state.toggleZip});
-    }
+        this.setState({showZip: !this.state.showZip});
+    };
 
     render() {
         const {isGeolocationAvailable, coords} = this.props;
         return (
-            <nav>
-                <div><Button variant="primary" onClick={this.toggleMap}>Karte anzeigen</Button></div>
-                <Form>
-                    <Form.Control type="text" placeholder="PLZ tippen"/>
-                    <Button variant="secondary" onClick={this.toggleZip}>Postleitzahl angeben</Button>
-                </Form>
-                {this.state.showMap &&
-                <Map
-                    lat={(isGeolocationAvailable && coords) && coords.latitude}
-                    lng={(isGeolocationAvailable && coords) && coords.longitude}
-                />}
-                {this.state.showMap && <Zip/>}
-            </nav>
+            <>
+                <InjectGlobal/>
+                <HeaderStyled>
+                    <LogoImgStyled src="img/logo_infocovid19.png" alt="Logo Info-Covid-19"/>
+
+                    {this.state.showMap &&
+                    <Form>
+                        <Form.Control type="text" placeholder="PLZ tippen"/>
+                        <Button type="submit" variant="primary" onClick={this.toggleZip}>Postleitzahl angeben</Button>
+                    </Form>}
+                    <MapToggleButtonStyled type={'button'} mapIsOn={this.state.showMap} onClick={this.toggleMap}>
+                        {!this.state.showMap?
+                            <><span>Karte öffnen</span><FaMapMarkedAlt/></> :
+                            <><span>Karte schließen</span><FaMapMarkedAlt/></>
+                        }
+                    </MapToggleButtonStyled>
+                </HeaderStyled>
+                <ContentContainerStyled>
+                    {this.state.showMap ?
+                        <Map
+                            lat={(isGeolocationAvailable && coords) && coords.latitude}
+                            lng={(isGeolocationAvailable && coords) && coords.longitude}
+                        />
+                        :
+                        <MainContent/>
+                    }
+                </ContentContainerStyled>
+            </>
         );
     }
 }
