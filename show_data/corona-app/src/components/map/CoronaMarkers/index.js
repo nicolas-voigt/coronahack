@@ -1,8 +1,11 @@
 import React from "react";
 import {CoronaMarker} from "./CoronaMarker";
-import {Markers} from "./MarkersData";
+//import {Markers} from "./MarkersData";
+import RestService from './services/RestService.js';
 
-const CoronaMarkers = Markers.map((marker, index) => (
+let api = new RestService();
+export default api.retrieveArticlesFromCity('Herne').then((results) => {
+  results.map((marker, index) => (
     <CoronaMarker
         key={index}
         lat={marker.lat}
@@ -11,6 +14,5 @@ const CoronaMarkers = Markers.map((marker, index) => (
         link={marker.link}
         text={marker.text}
     />
-));
-
-export default CoronaMarkers;
+  ))
+})

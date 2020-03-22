@@ -1,4 +1,4 @@
-import APIKeys from './APIKeys.ignore.js';
+import APIKeys from '../APIKeys.ignore.js';
 const geocodeURL = "https://maps.googleapis.com/maps/api/geocode/json?result_type=administrative_area_level_1|country|locality&latlng="
 
 class RestService {
