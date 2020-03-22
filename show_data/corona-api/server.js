@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const DBCredentials =  require('./DBCredentials.ignore.js');
 const Sequelize = require('sequelize');
+const fs = require('fs')
+const graphql = require('graphql-tools')
+const graphqlHTTP = require('express-graphql')
 
 const sequelize = new Sequelize(DBCredentials.getDatabase(), DBCredentials.getUsername(), DBCredentials.getPassword(), {
   host: DBCredentials.getServerName(),
@@ -92,9 +95,37 @@ var corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// register graphql module
+const resolvers = {
+  Query: {
+      city: (_, { name }) => {
+          return City.findOne({
+              where: { name }
+          })
+      }
+  },
+  City: {
+      news: async (city, args) => {
+          return city.getNews()
+      }
+  }
+}
+const extensions = ({ document, variables, operationName, result, context }) => {
+  return {
+      runTime: `${(Date.now() - context.startTime) / 1000} seconds`
+  }
+}
 
-
-
+const typeDefs = fs.readFileSync('./types.gql').toString()
+const schema = graphql.makeExecutableSchema({
+  typeDefs,
+  resolvers
+})
+app.use('/graphql', graphqlHTTP({
+  schema,
+  extensions,
+  graphiql: true
+}))
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
