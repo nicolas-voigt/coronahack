@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+/*import React, {useState} from "react";
 import {CoronaMarker} from "./CoronaMarker";
 import RestService from '../../../services/RestService.js';
 
@@ -26,4 +26,4 @@ let CoronaMarkers = () => {
     </>
 }
 
-export default CoronaMarkers;
+export default CoronaMarkers;*/
