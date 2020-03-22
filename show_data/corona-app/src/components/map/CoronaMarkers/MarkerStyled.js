@@ -1,17 +1,24 @@
 import styled from "styled-components";
-import {popUpBubbleBgColor, popUpBubbleCloseButtonBgColor, popUpBubbleTxtColor} from "../../../theme/colors";
+import {
+    popUpBubbleBgColor,
+    popUpBubbleCloseButtonBgColor,
+    popUpBubbleTxtColor,
+    green_bg
+} from "../../../theme/colors";
 import {FaMapMarkerAlt} from "react-icons/fa";
 import {MdClose} from "react-icons/md";
+
 
 export const CoronaMarkerContainer = styled.div`
   position: absolute;
 `;
 
+const MapMarkerSize = 30;
 export const FaMapMarkerAltStyled = styled(FaMapMarkerAlt)`
-    color: ${popUpBubbleCloseButtonBgColor};
-    width: 20px;
-    height: 20px;    
-    transform: translate(-50%, -30px);
+    color: ${props => props.popUpIsOn? green_bg : popUpBubbleCloseButtonBgColor};
+    width: ${MapMarkerSize}px;
+    height: ${MapMarkerSize}px;    
+    transform: translate(-50%, -${MapMarkerSize + 10}px);
 }
 `;
 
@@ -33,7 +40,7 @@ export const CloseButtonStyled = styled(MdClose)`
 
 export const CoronaMarkerStyled = styled.div`
     opacity: ${props => props.popUpIsOn? `1` : `0`};
-    background-color: ${popUpBubbleBgColor}e6; /*TDOD Geldi: replace with rgba*/
+    background-color: ${popUpBubbleBgColor}e6; /*TODO Geldi: replace with rgba*/
     color: ${popUpBubbleTxtColor};
     display: block;
     border: 1px solid ${popUpBubbleTxtColor};
@@ -51,9 +58,9 @@ export const CoronaMarkerStyled = styled.div`
     text-align: left;
     transition: all .15s linear;
   
-      &:hover {
-         background-color: ${popUpBubbleBgColor};
-      }
+  &:hover {
+     background-color: ${popUpBubbleBgColor};
+  }
 `;
 
 export const MarkerTitleStyled = styled.h3`

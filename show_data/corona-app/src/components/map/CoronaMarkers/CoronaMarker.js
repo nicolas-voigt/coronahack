@@ -14,7 +14,7 @@ export const CoronaMarker = ({factor, link, text}) => {
 
     return (
         <CoronaMarkerContainer>
-            <FaMapMarkerAltStyled onClick={() => {setPopUpIsOn(!popUpIsOn)}}/>
+            <FaMapMarkerAltStyled popUpIsOn={popUpIsOn} onClick={() => {setPopUpIsOn(!popUpIsOn)}}/>
             <CoronaMarkerStyled popUpIsOn={popUpIsOn} factor={factor} className={"hallo marker"}>
                 <CloseButtonStyled onClick={() => {setPopUpIsOn(false)}} />
                 <MarkerTitleStyled>{text}</MarkerTitleStyled>
