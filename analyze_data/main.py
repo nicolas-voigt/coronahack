@@ -90,18 +90,20 @@ def creation_handler():
             # }
         except:
             raise ValueError
-        # try:
-        if data['country']:
-            country_data = pd.read_sql(sql='SELECT * FROM news WHERE state_id IS NULL AND city_id IS NULL', con=engine)
-        else:
-            country_data = pd.DataFrame()
-        # except:
-        #     raise ValueError
+        try:
+            if data['country']:
+                country_data = pd.read_sql(sql='SELECT * FROM news WHERE state_id IS NULL AND city_id IS NULL', con=engine)
+            else:
+                country_data = pd.DataFrame()
+        except KeyError:
+            raise ValueError
         
         # try:
         if data['state']:
             state_id = pd.read_sql(sql='SELECT * FROM state WHERE name="{0}"'.format(data['state']), con=engine).at[0,'id']
             state_data = pd.read_sql(sql='SELECT * FROM news WHERE state_id="{0}"'.format(state_id)  , con=engine)
+            state_data['name'] = data['state']
+            
         else:
             state_data = pd.DataFrame()
         # except:
@@ -111,6 +113,7 @@ def creation_handler():
         if data['city']:
             city_id = pd.read_sql(sql='SELECT * FROM city WHERE name="{0}"'.format(data['city']), con=engine).at[0, 'id']
             city_data = pd.read_sql(sql='SELECT * FROM news WHERE city_id="{0}"'.format(city_id), con=engine)
+            city_data['name'] = data['city']
         else:
             city_data = pd.DataFrame()
         # except:
@@ -134,14 +137,16 @@ def creation_handler():
     if not state_data.empty:
         state_data['trust_rank'] = 0.5
         state_data['flesch_reading_ease'] = 0.6
-        state_data = state_data.to_dict('records')
+        state_data['source_name'] = pd.read_sql(sql='SELECT * FROM source WHERE id="{0}"'.format(state_data.at[0,'source_id']), con=engine).at[0, 'name']
         state_data['date'] = state_data['date'].dt.strftime('%Y-%m-%d')
+        state_data = state_data.to_dict('records')
     else:
         state_data = ''
     city_json = ''
     if not city_data.empty:
         city_data['trust_rank'] = 0.5
         city_data['flesch_reading_ease'] = 0.6
+        city_data['source_name'] = pd.read_sql(sql='SELECT * FROM source WHERE id="{0}"'.format(city_data.at[0,'source_id']), con=engine).at[0, 'name']
         city_data['date'] = city_data['date'].dt.strftime('%Y-%m-%d')
         city_data = city_data.to_dict('records')
     else:
