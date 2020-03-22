@@ -1,5 +1,4 @@
 const express = require('express');
-const secure = require('express-force-https');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -16,17 +15,13 @@ const credentials = {
 
 
 let app = express();
-const httpServer = express.createServer();
-
-httpServer.get('*', function(req, res) {
-    res.redirect('https://' + req.headers.host + req.url);
-})
+http.createServer(function (req, res) {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+}).listen(80);
 
 const httpsServer = https.createServer(credentials, app);
 app.use('/', express.static('../corona-app/build/'));
-httpServer.listen(80, () => {
-  console.log('HTTP redirector running on port 80')
-});
 
 httpsServer.listen(443, () => {
 	console.log('HTTPS Server running on port 443');
