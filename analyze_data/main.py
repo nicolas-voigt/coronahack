@@ -78,11 +78,12 @@ def rate_data():
 
 @post('/get_data')
 def creation_handler():
-    data = {}
+    request_data = {}
+    data = {'country':'', 'state':'', 'city':''}
     try:
         # parse input data
         try:
-            data = request.json
+            request_data = request.json
             # data = {
             #     'country':'germany',
             #     'state':'Bayern',
@@ -91,33 +92,33 @@ def creation_handler():
         except:
             raise ValueError
         try:
-            if data['country']:
-                country_data = pd.read_sql(sql='SELECT * FROM news WHERE state_id IS NULL AND city_id IS NULL', con=engine)
+            if request_data['country']:
+                data['country'] = pd.read_sql(sql='SELECT * FROM news WHERE state_id IS NULL AND city_id IS NULL', con=engine)
             else:
-                country_data = pd.DataFrame()
+                data['country'] = pd.DataFrame()
         except KeyError:
             raise ValueError
         
-        # try:
-        if data['state']:
-            state_id = pd.read_sql(sql='SELECT * FROM state WHERE name="{0}"'.format(data['state']), con=engine).at[0,'id']
-            state_data = pd.read_sql(sql='SELECT * FROM news WHERE state_id="{0}"'.format(state_id)  , con=engine)
-            state_data['name'] = data['state']
-            
-        else:
-            state_data = pd.DataFrame()
-        # except:
-        #     raise ValueError
+        try:
+            if request_data['state']:
+                state_id = pd.read_sql(sql='SELECT * FROM state WHERE name="{0}"'.format(request_data['state']), con=engine).at[0,'id']
+                data['state'] = pd.read_sql(sql='SELECT * FROM news WHERE state_id="{0}"'.format(state_id)  , con=engine)
+                data['state']['name'] = request_data['state']
+                
+            else:
+                data['state'] = pd.DataFrame()
+        except:
+            raise ValueError
 
-        # try:
-        if data['city']:
-            city_id = pd.read_sql(sql='SELECT * FROM city WHERE name="{0}"'.format(data['city']), con=engine).at[0, 'id']
-            city_data = pd.read_sql(sql='SELECT * FROM news WHERE city_id="{0}"'.format(city_id), con=engine)
-            city_data['name'] = data['city']
-        else:
-            city_data = pd.DataFrame()
-        # except:
-        #     raise ValueError
+        try:
+            if request_data['city']:
+                city_id = pd.read_sql(sql='SELECT * FROM city WHERE name="{0}"'.format(request_data['city']), con=engine).at[0, 'id']
+                data['city'] = pd.read_sql(sql='SELECT * FROM news WHERE city_id="{0}"'.format(city_id), con=engine)
+                data['city']['name'] = request_data['city']
+            else:
+                data['city'] = pd.DataFrame()
+        except:
+            raise ValueError
         
     except ValueError:
         # if bad request data, return 400 Bad Request
@@ -125,35 +126,21 @@ def creation_handler():
         return
     
     # TODO: Add trust score
-    country_json = ''
-    if not country_data.empty:
-        country_data['trust_rank'] = 0.5
-        country_data['flesch_reading_ease'] = 0.6
-        country_data = country_data.to_dict('records')
-        country_data['date'] = country_data['date'].dt.strftime('%Y-%m-%d')
-    else:
-        country_data = ''
-    state_json = ''
-    if not state_data.empty:
-        state_data['trust_rank'] = 0.5
-        state_data['flesch_reading_ease'] = 0.6
-        state_data['source_name'] = pd.read_sql(sql='SELECT * FROM source WHERE id="{0}"'.format(state_data.at[0,'source_id']), con=engine).at[0, 'name']
-        state_data['date'] = state_data['date'].dt.strftime('%Y-%m-%d')
-        state_data = state_data.to_dict('records')
-    else:
-        state_data = ''
-    city_json = ''
-    if not city_data.empty:
-        city_data['trust_rank'] = 0.5
-        city_data['flesch_reading_ease'] = 0.6
-        city_data['source_name'] = pd.read_sql(sql='SELECT * FROM source WHERE id="{0}"'.format(city_data.at[0,'source_id']), con=engine).at[0, 'name']
-        city_data['date'] = city_data['date'].dt.strftime('%Y-%m-%d')
-        city_data = city_data.to_dict('records')
-    else:
-        city_data = ''
+    for key in data:
+        if not data[key].empty:
+            data[key]['trust_rank'] = 0.5
+            data[key]['flesch_reading_ease'] = 0.6
+            source_id = data[key].at[0,'source_id']
+            sql_quer = 'SELECT * FROM source WHERE id="{0}"'.format(source_id)
+            data[key]['source_name'] = pd.read_sql(sql=sql_quer.format(source_id), con=engine).at[0, 'name']
+
+            data[key]['date'] = data[key]['date'].dt.strftime('%Y-%m-%d')
+            data[key] = data[key].to_dict('records')
+        else:
+            data[key] = ''
 
     response.headers['Content-Type'] = 'application/json'
-    return json.dumps({"country":country_data, "state":state_data, "city":city_data}, ensure_ascii=False)
+    return json.dumps({"country":data['country'], "state":data['state'], "city":data['city']}, ensure_ascii=False)
 
 
 if __name__ == '__main__':
