@@ -5,7 +5,8 @@ import {Form, Button} from "react-bootstrap";
 import {
     LogoImgStyled,
     HeaderStyled,
-    MapToggleButtonStyled
+    MapToggleButtonStyled,
+    ContentContainerStyled
 } from "./DashboardStyled"
 import {FaMapMarkedAlt} from "react-icons/fa";
 import {InjectGlobal} from "../../theme/globalStyles"
@@ -39,26 +40,28 @@ export class Dashboard extends React.Component {
                 <HeaderStyled>
                     <LogoImgStyled src="img/logo_infocovid19.png" alt="Logo Info-Covid-19"/>
 
+                    {this.state.showMap &&
                     <Form>
                         <Form.Control type="text" placeholder="PLZ tippen"/>
-                        <Button type="submit" variant="secondary" onClick={this.toggleZip}>Postleitzahl angeben</Button>
-                    </Form>
+                        <Button type="submit" variant="primary" onClick={this.toggleZip}>Postleitzahl angeben</Button>
+                    </Form>}
                     <MapToggleButtonStyled type={'button'} mapIsOn={this.state.showMap} onClick={this.toggleMap}>
                         {!this.state.showMap?
-                            <><span>Karte anzeigen</span><FaMapMarkedAlt/></> :
-                            <><span>Karte verstecken</span><FaMapMarkedAlt/></>
-
+                            <><span>Karte öffnen</span><FaMapMarkedAlt/></> :
+                            <><span>Karte schließen</span><FaMapMarkedAlt/></>
                         }
                     </MapToggleButtonStyled>
                 </HeaderStyled>
-                {this.state.showMap ?
-                    <Map
-                        lat={(isGeolocationAvailable && coords) && coords.latitude}
-                        lng={(isGeolocationAvailable && coords) && coords.longitude}
-                    />
-                    :
-                    <MainContent/>
-                }
+                <ContentContainerStyled>
+                    {this.state.showMap ?
+                        <Map
+                            lat={(isGeolocationAvailable && coords) && coords.latitude}
+                            lng={(isGeolocationAvailable && coords) && coords.longitude}
+                        />
+                        :
+                        <MainContent/>
+                    }
+                </ContentContainerStyled>
             </>
         );
     }

@@ -1,5 +1,7 @@
 import styled, {css} from "styled-components";
-import {popUpBubbleCloseButtonBgColor, popUpBubbleTxtColor, offWcfefe_txt} from "../../theme/colors";
+import {popUpBubbleCloseButtonBgColor, popUpBubbleTxtColor, offWcfefe_txt, green_bg} from "../../theme/colors";
+
+const headerHeight = '70px';
 
 export const HeaderStyled = styled.div`
   background-color: ${offWcfefe_txt};
@@ -8,8 +10,13 @@ export const HeaderStyled = styled.div`
   align-items: flex-end;
   justify-content: space-between;
   padding: 15px 20px;
-  max-height: 70px;
+  max-height: ${headerHeight};
   overflow: hidden;
+`;
+
+export const ContentContainerStyled = styled.div`
+  height: calc(100vh - ${headerHeight});
+  min-height: 450px;
 `;
 
 export const LogoImgStyled = styled.img`
@@ -20,7 +27,8 @@ export const MapToggleButtonStyled = styled.button`
     height: 40px;
     display: inline-block;
     border-radius: 8px;
-    background-color: ${popUpBubbleCloseButtonBgColor};
+      background-color: ${props => !props.mapIsOn? green_bg : popUpBubbleCloseButtonBgColor};
+    
     border: none;
     color: ${popUpBubbleTxtColor};
     text-align: left;
@@ -51,9 +59,12 @@ export const MapToggleButtonStyled = styled.button`
         span {
             margin-right: 8px;
         }
+        
         svg {
+           
           color: ${popUpBubbleTxtColor};
-            opacity: 1;
+          opacity: ${props => props.mapIsOn? `0.5` : `1`};
+            
             margin-left: 0;
         }
     }
