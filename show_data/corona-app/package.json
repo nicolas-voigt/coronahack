@@ -16,7 +16,7 @@
     "react-geolocated": "3.0.1",
     "react-icons": "^3.9.0",
     "react-pure-render": "^1.0.2",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "styled-components": "^5.0.1"
   },
   "scripts": {
